@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	this.validator = new Me.Validate($('#form1'), {onError:onFormError, onSuccess:onFormSuccess});
+	this.validator = new Me.validate($('#form1'), {onError:onFormError, onSuccess:onFormSuccess});
 	this.validator.addField({name:'name', placeholder:"Your name", error:'This field is required'});
 	this.validator.addField({name:'phone',type:'phone', error:$('#error-phone'), mask:'(514) 999-9999'});
 	this.validator.addField({name:'zipcode',type:'zipcode', error:'veuillez entrer un zipcode canadien'});

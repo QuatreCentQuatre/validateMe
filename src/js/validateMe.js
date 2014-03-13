@@ -515,5 +515,5 @@
 	if(!window.Me){
 		window.Me = {};
 	}
-	window.Me.Validate = Validator;
+	window.Me.validate = Validator;
 }(jQuery, window, document));
