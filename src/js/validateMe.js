@@ -165,6 +165,7 @@
 			}
 			field.$label = this.$el.find('label[for="' + field.id + '"]');
 			if(!field.$label.exists()){
+				delete field.id;
 				delete field.$label;
 			}
 			//todo - make this an options ?
@@ -336,7 +337,12 @@
 				}
 			},
 			validateCheckbox: function(field){
-				var val = field.$el[0].checked;
+				var val = false;
+				$(field.$el).each(function(index, el){
+					if (el.checked) {
+						val = el.checked;
+					}
+				});
 				if(!field.required){
 					if(val == field.requiredDefault){
 						return true;
