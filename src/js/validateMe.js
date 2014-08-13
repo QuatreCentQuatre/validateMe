@@ -42,7 +42,7 @@
 				console.warn(this.name + ": Couldn't find form");
 			}
 			this.$el = $el;
-			this.name = 'HeroForm-' + id;
+			this.name = 'ValidateMe-' + id;
 			id++;
 			this.fields = [];
 			this.invalidFields = [];
@@ -62,87 +62,22 @@
 				errorLogs.push(this.name + ": Couldn't find field with name: "+ field.name);
 				return;
 			}
+
 			//if the type given by the user is not null, we check to make sure its one of the supported type.
-			if(field.type != ''){
-				var inArray = false;
-				for(var key in this.fieldTypeDefaults){
-					if(key == field.type){
-						inArray = true;
+			var typeInArray = false;
+			if(field.type != '') {
+				for (var key in this.fieldTypeDefaults) {
+					if (key == field.type) {
+						typeInArray = true;
 					}
 				}
-				if(!inArray){
+				if (!typeInArray) {
 					errorLogs.push(this.name + ": Type must be one of the types in: ", this.fieldTypeDefaults);
 					error = true;
 				}
 			}
-			if(field.error != undefined){
-				if(typeof field.error !== 'string' && typeof field.error !== "object"){
-					errorLogs.push(this.name + ": Error must be String or DOM element.");
-					error = true;
-				}
-				if(typeof field.error === "object"){
-					if(!field.error.exists()){
-						errorLogs.push(this.name + ": Error must be String or DOM element.");
-						error = true;
-					}
-				}
-			}
-			if(typeof field.required !== "boolean"){
-				errorLogs.push(this.name + ": Required must be boolean.");
-				error = true;
-			}
-			if(field.copy != ''){
-				if(!this.$el.find('[name="'+field.copy+'"]').exists()){
-					errorLogs.push(this.name + ": Couldn't find field with name: "+ field.copy);
-					error = true;
-				}
-			}
-			if(typeof field.mask !== 'string'){
-				errorLogs.push(this.name + ": Mask must be a String (refer to http://digitalbush.com/projects/masked-input-plugin/).");
-				error = true;
-			}
-			if(field.pattern != undefined){
-				if(!(field.pattern instanceof RegExp)){
-					errorLogs.push(this.name + ": Pattern must be a RegExp.");
-					error = true;
-				}
-			}
-			if(field.placeholder != ''){
-				if(typeof field.placeholder !== "string"){
-					errorLogs.push(this.name + ": Placeholder must be String.");
-					error = true;
-				}else{
-					field.$el.val(field.placeholder);
-				}
-			}
-			else{
-				if(field.$el.attr('placeholder') != null){
-					field.placeholder = field.$el.attr('placeholder');
-					field.$el.val(field.placeholder);
-				}
-			}
-			if(field.filetype != ''){
-				if(typeof field.filetype !== "string"){
-					errorLogs.push(this.name + ": Filetype must be String and each type must be separated by a comma.");
-					error = true;
-				}
-				//remove white space
-				field.filetype = String(field.filetype.replace(/ /g,'')).split(',');
-			}
 
-
-			if(errorLogs.length > 0){
-				console.group(this.name + ' -> addField: ' + field.name);
-				for(var i=0; i<errorLogs.length; i++)
-					console.log(errorLogs[i]);
-				console.groupEnd(this.name + ' -> addField: ' + field.name);
-			}
-			if(error){
-				return;
-			}
-			// END Validate all fields options
-			field.id = field.$el.attr('id');
-			if(field.type == ''){
+			if(field.type == '') {
 				if(field.$el[0].nodeName.toLowerCase() == "input"){
 					field.type = field.$el[0].type.toLowerCase();
 				}
@@ -151,6 +86,93 @@
 				}
 			}
 
+			if (field.error != undefined) {
+				if (typeof field.error !== 'string' && typeof field.error !== "object") {
+					errorLogs.push(this.name + ": Error must be String or DOM element.");
+					error = true;
+				}
+				if (typeof field.error === "object") {
+					if (!field.error.exists()) {
+						errorLogs.push(this.name + ": Error must be String or DOM element.");
+						error = true;
+					}
+				}
+			}
+
+			if (typeof field.required !== "boolean") {
+				errorLogs.push(this.name + ": Required must be boolean.");
+				error = true;
+			}
+
+			if (field.copy != '') {
+				if(!this.$el.find('[name="'+field.copy+'"]').exists()){
+					errorLogs.push(this.name + ": Couldn't find field with name: "+ field.copy);
+					error = true;
+				}
+			}
+
+			if (typeof field.mask !== 'string') {
+				errorLogs.push(this.name + ": Mask must be a String (refer to http://digitalbush.com/projects/masked-input-plugin/).");
+				error = true;
+			}
+
+			if (field.mask == "" && typeInArray) {
+				if (this.fieldTypeDefaults[field.type].mask) {
+					field.mask = this.fieldTypeDefaults[field.type].mask;
+				}
+			}
+			field.firstTimeApply = true;
+
+			if (field.pattern != undefined) {
+				if (!(field.pattern instanceof RegExp)) {
+					errorLogs.push(this.name + ": Pattern must be a RegExp.");
+					error = true;
+				}
+			}
+
+			if (field.pattern == undefined && typeInArray) {
+				if (this.fieldTypeDefaults[field.type].pattern) {
+					field.pattern = this.fieldTypeDefaults[field.type].pattern;
+				}
+			}
+
+			if (field.placeholder != '') {
+				if(typeof field.placeholder !== "string"){
+					errorLogs.push(this.name + ": Placeholder must be String.");
+					error = true;
+				} else {
+					field.$el.val(field.placeholder);
+				}
+			} else {
+				if(field.$el.attr('placeholder') != null){
+					field.placeholder = field.$el.attr('placeholder');
+					field.$el.val(field.placeholder);
+				}
+			}
+
+			if (field.filetype != '') {
+				if(typeof field.filetype !== "string"){
+					errorLogs.push(this.name + ": Filetype must be String and each type must be separated by a comma.");
+					error = true;
+				}
+				//remove white space
+				field.filetype = String(field.filetype.replace(/ /g,'')).split(',');
+			}
+
+			if (errorLogs.length > 0) {
+				console.group(this.name + ' -> addField: ' + field.name);
+				for(var i=0; i<errorLogs.length; i++)
+					console.log(errorLogs[i]);
+				console.groupEnd(this.name + ' -> addField: ' + field.name);
+			}
+
+			if (error) {
+				return;
+			}
+
+			// END Validate all fields options
+			field.id = field.$el.attr('id');
+
 			field.switchType = function(type){
 				if(field.type != 'password'){
 					return;
@@ -158,16 +180,27 @@
 				field.$el.attr('type', type);
 			};
 
+			field.toggleMask = function(bool){
+				if (field.mask) {
+					if (bool) {
+						field.$el.mask(field.mask);
+					} else {
+						field.$el.unmask();
+					}
+				}
+			};
 
 			//password switch to text if we have a placeholder, it will change back to password when we focus on the field
 			if(field.type == 'password' && field.placeholder != ''){
 				field.switchType("text");
 			}
+
 			field.$label = this.$el.find('label[for="' + field.id + '"]');
 			if(!field.$label.exists()){
 				delete field.id;
 				delete field.$label;
 			}
+
 			//todo - make this an options ?
 			/*if(field.$label){
 			 // if no placeholder take the label if one is associated
@@ -175,10 +208,14 @@
 			 field.placeholder = field.$label.html();
 			 }
 			 }*/
+
 			//add Rules, for some cases, they will all have the same default rule
-			field.rule = (typeof rules['add'+utils.capitalize(field.type)+'Rule'] === 'function') ? rules['add'+utils.capitalize(field.type)+'Rule'](field) : rules['addDefaultRule'](field);
-			field.$el.on('focus.'+ this.name,field, this.focusHandler);
-			field.$el.on('blur.'+ this.name,field, this.blurHandler);
+			field.rule = (typeof rules['add' + utils.capitalize(field.type) + 'Rule'] === 'function') ? rules['add' + utils.capitalize(field.type) + 'Rule'](field) : rules['addDefaultRule'](field);
+
+			console.log(this.name);
+			field.$el.on('focus.' + this.name, field, this.focusHandler);
+			field.$el.on('blur.' + this.name, field, this.blurHandler);
+
 			this.fields.push(field);
 		};
 
@@ -277,7 +314,7 @@
 		};
 
 		var validations = {
-			validateDefault: function(field){
+			validateDefault: function(field) {
 				var val = field.$el.val();
 				//when the field is not required, we will validate it only if it has been filled.
 				if(!field.required){
@@ -393,55 +430,10 @@
 		var rules = {
 			addDefaultRule: function(field){
 				var regexp = new RegExp();
-				if(field.pattern != undefined){
+				if (field.pattern != undefined) {
 					regexp = field.pattern;
 				}
-				if(field.mask){
-					field.$el.mask(field.mask);
-				}
-				field.requiredDefault = '';
-				return regexp;
-			},
-			addEmailRule: function(field){
-				var regexp = new RegExp();
-				if(field.pattern == undefined){
-					regexp = scope.fieldTypeDefaults.email.pattern
-				}else{
-					regexp = field.pattern;
-				}
-				if(field.mask){
-					field.$el.mask(field.mask);
-				}
-				field.requiredDefault = '';
-				return regexp;
-			},
-			addPhoneRule: function(field){
-				var regexp = new RegExp();
-				if(field.pattern != undefined){
-					regexp = field.pattern;
-				}else{
-					regexp = scope.fieldTypeDefaults.phone.pattern;
-				}
-				if(field.mask){
-					field.$el.mask(field.mask);
-				}else{
-					field.$el.mask(scope.fieldTypeDefaults.phone.mask);
-				}
-				field.requiredDefault = '';
-				return regexp;
-			},
-			addZipcodeRule: function(field){
-				var regexp = new RegExp();
-				if(field.pattern != undefined){
-					regexp = field.pattern;
-				}else{
-					regexp = scope.fieldTypeDefaults.zipcode.pattern;
-				}
-				if(field.mask){
-					field.$el.mask(field.mask);
-				}else{
-					field.$el.mask(scope.fieldTypeDefaults.zipcode.mask);
-				}
+
 				field.requiredDefault = '';
 				return regexp;
 			},
@@ -488,28 +480,37 @@
 				return regEx;
 			}
 		};
-		this.focusHandler = function(e){
+		this.focusHandler = function(e) {
 			var field = e.data;
-			if(field.$el.val() == field.placeholder || field.$el.val() == field.error || field.$el.val() == ""){
-				if(field.type == "password"){
+			if (field.$el.val() == field.placeholder || field.$el.val() == field.error || field.$el.val() == "") {
+				if (field.type == "password") {
 					privateMethods.switchPasswordType(field, "password");
 				}
 				var value = "";
-				if(field.lastValue){
+				if (field.lastValue) {
 					value = field.lastValue;
 					delete field.lastValue;
 				}
 				field.$el.val(value);
+				if (field.mask != "" && field.firstTimeApply) {
+					field.firstTimeApply = false;
+					field.toggleMask(true);
+					field.$el.trigger('blur.' + this.name);
+					var view = this;
+					setTimeout(function(){
+						field.$el.trigger('focus.' + view.name);
+					}, 100);
+				}
 			}
 		};
 		this.blurHandler = function(e){
 			var field = e.data;
-			setTimeout(function(){
-				if(field.$el.val().length == 0){
-					if(field.$el.attr('type') == "password"){
+			setTimeout(function() {
+				if (field.$el.val().length == 0) {
+					if (field.$el.attr('type') == "password") {
 						privateMethods.switchPasswordType(field, "text");
 					}
-					if(field.placeholder != ''){
+					if (field.placeholder != '') {
 						field.$el.val(field.placeholder);
 					}
 				}

@@ -1,8 +1,10 @@
 $(document).ready(function(){
 	this.validator = new Me.validate($('#form1'), {onError:onFormError, onSuccess:onFormSuccess});
 	this.validator.addField({name:'name', placeholder:"Your name", error:'This field is required'});
+	this.validator.addField({name:'pin-mask', mask:'*********', placeholder:"Pin Mask Test", error:'This field is required'});
 	this.validator.addField({name:'phone',type:'phone', error:$('#error-phone'), mask:'(514) 999-9999'});
 	this.validator.addField({name:'zipcode',type:'zipcode', error:'veuillez entrer un zipcode canadien'});
+	this.validator.addField({name:'zipcode-placeholder',type:'zipcode', placeholder:'Zipcode Placeholder', error:'veuillez entrer un zipcode canadien'});
 	this.validator.addField({name:'chk1', required:false});
 	this.validator.addField({name:'select'});
 	this.validator.addField({name:'pw', placeholder:'Your password'});
