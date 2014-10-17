@@ -1,3 +1,102 @@
-form{
-	margin: 0px;
+@dark-blue: #0c6a8b;
+@white: #ffffff;
+@error-red: #f46166;
+
+.clearfix() {
+	*zoom: 1;
+	&:before, &:after {
+		display: table;
+		content: " ";
+		line-height: 0;
+	}
+	&:after {
+		clear: both;
+	}
+}
+.box-sizing() {
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+
+.hidden {
+	display: none;
+	visibility: hidden;
+}
+
+form {
+	.row {
+		.clearfix();
+	}
+
+	p{
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+	.input-ctn {
+		position: relative;
+		float: left;
+		display: block;
+		.box-sizing();
+		height: 35px;
+		margin-bottom: 10px;
+
+		&.no-margin {
+			margin-bottom: 0px;
+		}
+
+		.input-messages-ctn {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+
+		input, .input-messages {
+			.box-sizing();
+			padding: 0 20px;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+			color: @dark-blue;
+			font-size: 16px;
+			border: 2px solid transparent;
+			-webkit-font-smoothing: antialiased;
+		}
+
+		input {
+			border: 2px solid @dark-blue;
+			&.error {
+				border: 2px solid @error-red;
+			}
+		}
+
+
+		.input-messages {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+			background-image: url("../img/ie-bg.png");
+			border: none;
+			border-left: 2px solid transparent;
+			border-right: 2px solid transparent;
+			line-height: 35px;
+			display: none;
+			cursor: text;
+		}
+
+		textarea {
+			.box-sizing();
+			padding: 20px;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+			border: 2px solid transparent;
+			font-size: 16px;
+
+			&.error {
+				border: 2px solid @error-red;
+			}
+		}
+	}
 }
