@@ -21,34 +21,59 @@ Place the **validateMe.js** file in your default JavaScript vendor directory. Li
 <script src="js/vendor/jquery.maskedinput.min.js"></script>
 <script src="js/vendor/validateMe.js"></script>
 ```
-Here you go ! You're now ready to use validateMe. Here most commons method used.
+Here you go ! You're now ready to use validateMe. Here how to get started !
+
+#### HTML:
+~~~
+<form id="myCustomForm" method="post" action="">
+	<div class="inner">
+		<div class="row">
+			<p>Name</p>
+			<div class="input-ctn">
+				<div class="input-messages-ctn">
+					<div class="input-messages" me:validate:related="not-required"></div>
+					<input name="name" type="text" me:validate:placeholder="Name" value="" autocomplete="off" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="btn">
+			    //Class btn-submit needed for form validation
+				<a class="btn-submit" href="#">Submit</a>
+			</div>
+		</div>
+		<input class="hidden" type="submit" value="Submit"/>
+	</div>
+</form>
+~~~
+
+#### Javascript:
 
 ```
-//Debugger for mobile.
-Me.log.setOptions({mobile:true});
+//Basic Form Validation
+var validation = new Me.form({
+    scope: this,
+    prettyName: 'CustomForm',
+    //Target your form
+    $form: $('#myCustomForm'),
+    fields:[
+        //Add every input name you need (Check the demo for more exemples)
+        {name: 'name'}
+    ],
+    onSuccess: formSuccessHandler,
+    onError: formErrorHandler
+});
 
-//Disable logMe console
-Me.log.disable();
-	
-//Re-enable logMe console
-Me.log.enable();
+//Exemple of formSuccessHandler
+function formAjaxSuccess(data) {
+    if (data.response.success == 0) {
+        $.each(validation.validation.fields, function(index, field) {
+            field.$el.addClass('error');
+        });
+    }
+}
 
 ```
 
 ---
 
-### Methods
-
-Here the list of methods of logMe with a small description.
-
-#### Constructor
-- __construct : inital method
-- __dependencies : check any depency support and send some errors
-
-#### Public
-- setOptions(object) : pass new options
-- getOptions : receive the current options
-- enable : activate logs
-- disable : disable logs
-- toggleDebugger(boolean) : will toggle debugger
-- fixConsole : will force a redraw of the methods (will be called after setOptions)
