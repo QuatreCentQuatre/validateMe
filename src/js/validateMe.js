@@ -17,7 +17,7 @@
     };
 
     var p = ValidateMe.prototype;
-    p.debug   = true;
+    p.debug   = false;
 
     p.id      = null;
     p.name    = null;
@@ -210,6 +210,25 @@
         // trigger first blur to set to initial state
         privates.fill.call(this, field);
     };
+
+	p.removeField = function(fieldToRemove) {
+		var rfield = null;
+		var rindex = null;
+		$.each(this.fields, function(index, field) {
+			if (fieldToRemove.name == field.name) {
+				rindex = index;
+				rfield = field;
+			}
+		});
+		if (rfield) {
+			if (rfield.$related) rfield.$related.off('click.' + this.name);
+			rfield.$el.off('focus.' + this.name);
+			rfield.$el.off('blur.'  + this.name);
+
+
+			this.fields.splice(rindex, 1);
+		}
+	};
 
     /**
      * Method to call when you want to validate your form
@@ -430,8 +449,8 @@
                 field.$el.val(field.defaultValue);
             } else if (field.type == 'checkbox' || field.type == 'radio') {
                 field.$el.attr('checked', false);
-                field.$el.trigger('change', 'ValidateMe');
             }
+			field.$el.trigger('change', 'ValidateMe');
 
             privates.fill.call(this, field);
         },
@@ -527,14 +546,27 @@
         this.options = settings;
     };
 
-    p.addFields = function() {
-        if (this.skin_enabled) { if (window.Me && Me.skin) {this.skin = new Me.skin(this.$form);} else {console.warn('if you want to skin you need SkinMe.')}};
-        this.validation = new Me.validate(this.$form, {scope:this, debug:this.debug, onError:this.onValidationError, onSuccess:this.onValidationSuccess});
-        var scope = this;
-        $.each(this.fields, function(index, value) {
-            scope.validation.addField(value);
-        });
+    p.addFields = function(array) {
+		var scope = this;
+		if (!array) {
+			if (this.skin_enabled) { if (window.Me && Me.skin) {this.skin = new Me.skin(this.$form);} else {console.warn('if you want to skin you need SkinMe.');}}
+			this.validation = new Me.validate(this.$form, {scope:this, debug:this.debug, onError:this.onValidationError, onSuccess:this.onValidationSuccess});
+			$.each(this.fields, function(index, value) {
+				scope.validation.addField(value);
+			});
+		} else {
+			$.each(array, function(index, value) {
+				scope.validation.addField(value);
+			});
+		}
     };
+
+	p.removeFields = function(array) {
+		var scope = this;
+		$.each(array, function(index, value) {
+			scope.validation.removeField(value);
+		});
+	};
 
     p.addEvents = function() {
         this.$messages  = (this.$form.find('.form-messages').length > 0) ? this.$form.find('.form-messages') : null;
@@ -562,6 +594,7 @@
     };
 
     p.onValidationError = function(fields, errorFields) {
+
         var field = null;
         for (var fieldKey = 0; fieldKey < fields.length; fieldKey++) {
             field = fields[fieldKey];
