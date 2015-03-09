@@ -106,8 +106,7 @@
                 }
             }
             if (!inArray) {
-                fieldError = true;
-                errorLogs.push(this.name + "The type you want is not supported. Please refer to documentation.", this.fieldTypeDefaults);
+                console.warn(this.name + "The type you want is not supported so it become text. Please refer to documentation.", this.fieldTypeDefaults);
             }
         }
 
