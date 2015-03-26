@@ -229,6 +229,16 @@
 		}
 	};
 
+	p.getField = function(name) {
+		var rfield = null;
+		$.each(this.fields, function(index, field) {
+			if (name == field.name) {
+				rfield = field;
+			}
+		});
+		return rfield;
+	};
+
     /**
      * Method to call when you want to validate your form
      **/
