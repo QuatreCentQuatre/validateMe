@@ -27,7 +27,7 @@
     p.fieldDefaults = {
         name        : null,  //REQUIRED, String: name attribute of the field.
         type        : null,  //String, must be one of the types in fieldTypeDefaults.
-        errors      : [],    //Array of element to add error class
+        errors      : null,    //Array of element to add error class
         handlePlaceholder: false,
         required    : true,  //Boolean: the non-required fields will be validated (only if they are not empty), which let the user the chocie to leave it empty or not.
         default_ok  : false, //Boolean
@@ -148,6 +148,7 @@
             field.$related    = (this.$form.find('[me\\:validate\\:related="' + field.name + '"]').length > 0) ? this.$form.find('[me\\:validate\\:related="' + field.name + '"]') : null;
             field.placeholder = field.$el.attr('me:validate:placeholder') || null;
             field.error       = field.$el.attr('me:validate:error') || null;
+            field.errors      = (this.$form.find('[me\\:validate\\:related_error="' + field.name + '"]').length > 0) ? this.$form.find('[me\\:validate\\:related_error="' + field.name + '"]') : null;
 
             //add type if isn't set
             if (!field.type) {
@@ -448,9 +449,9 @@
             if (field.$skin) {field.$skin.removeClass('error');}
             if (field.$label) {field.$label.removeClass('error');}
             if (field.$related) {field.$related.removeClass('error');}
-            if (field.errors.length > 0) {
-                $.each(field.errors, function(index, $item) {
-                    $item.removeClass('error');
+            if (field.errors) {
+                $.each(field.errors, function(index, item) {
+                    $(item).removeClass('error');
                 });
             }
 
