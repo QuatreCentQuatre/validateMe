@@ -27,7 +27,8 @@
     p.fieldDefaults = {
         name        : null,  //REQUIRED, String: name attribute of the field.
         type        : null,  //String, must be one of the types in fieldTypeDefaults.
-        errors      : null,    //Array of element to add error class
+        errors      : null,  //Array of element to add error class
+		error_code  : null,  // copy, empty, regex
         handlePlaceholder: false,
         required    : true,  //Boolean: the non-required fields will be validated (only if they are not empty), which let the user the chocie to leave it empty or not.
         default_ok  : false, //Boolean
@@ -149,7 +150,6 @@
             field.placeholder = field.$el.attr('me:validate:placeholder') || null;
             field.error       = field.$el.attr('me:validate:error') || null;
             field.errors      = (this.$form.find('[me\\:validate\\:related_error="' + field.name + '"]').length > 0) ? this.$form.find('[me\\:validate\\:related_error="' + field.name + '"]') : null;
-
             //add type if isn't set
             if (!field.type) {
                 field.type = (field.$el[0].nodeName.toLowerCase() == "input") ? field.$el[0].type.toLowerCase() : field.$el[0].nodeName.toLowerCase();
@@ -383,18 +383,19 @@
             var valid = true;
 
             var needToValid = false;
+			field.error_code = null;
             if (field.required) {needToValid = true;}
             if (!field.required && field.placeholder != val && field.error != val && field.$el[0].defautValue != val) {needToValid = true;}
             if (!field.required && field.$copy && field.$copy.val() != field.$copy[0].defautValue) {needToValid = true;}
             if (!field.required && field.$el[0].$copied && field.$el[0].$copied.val() != field.$el[0].$copied[0].defautValue) {needToValid = true;}
 
             if (needToValid) {
-                if (!field.rule.test(val)) {valid = false;} // validate rule
-                if (field.placeholder && field.placeholder == val) {valid = false;} // validate placeholder
-                if (field.error && field.error == val) {valid = false;} // validate error
-                if (!field.default_ok && field.$el[0].defautValue == val) {valid = false;} // validate empty
-                if (field.$el[0].$copied && field.$el[0].$copied.val() != val) {valid = false;} // validate copy
-                if (field.$copy && field.$copy.val() != val) {valid = false;} // validate copy
+				if (valid && !field.default_ok && field.$el[0].defautValue == val) {valid = false; field.error_code = "empty";} // validate empty
+				if (field.$el[0].$copied && field.$el[0].$copied.val() != val) {valid = false; field.error_code = "copy";} // validate copy
+				if (field.$copy && field.$copy.val() != val) {valid = false; field.error_code = "copy";} // validate copy
+                if (valid && !field.rule.test(val)) {valid = false; field.error_code = "regex";} // validate rule
+                if (valid && field.placeholder && field.placeholder == val) {valid = false;} // validate placeholder
+                if (valid && field.error && field.error == val) {valid = false;} // validate error
             }
             return valid;
         },

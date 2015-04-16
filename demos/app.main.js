@@ -76,9 +76,9 @@ $(document).ready(function(){
 		if (field.$label) {field.$label.removeClass('error');}
 		if (field.$related) {field.$related.removeClass('error');}
 		if (field.$el.parents(".dk_container").length > 0) {field.$el.parents(".dk_container").removeClass('error');}
-		if (field.errors.length > 0) {
-			$.each(field.errors, function(index, $item) {
-				$item.removeClass('error');
+		if (field.errors) {
+			$.each(field.errors, function(index, item) {
+				$(item).removeClass('error');
 			});
 		}
 	}
@@ -89,9 +89,9 @@ $(document).ready(function(){
 		if (field.$label) {field.$label.addClass('error');}
 		if (field.$related) {field.$related.addClass('error');}
 		if (field.$el.parents(".dk_container").length > 0) {field.$el.parents(".dk_container").addClass('error');}
-		if (field.errors.length > 0) {
-			$.each(field.errors, function(index, $item) {
-				$item.addClass('error');
+		if (field.errors) {
+			$.each(field.errors, function(index, item) {
+				$(item).addClass('error');
 			});
 		}
 	}
