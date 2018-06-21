@@ -28,14 +28,15 @@
         name        : null,  //REQUIRED, String: name attribute of the field.
         type        : null,  //String, must be one of the types in fieldTypeDefaults.
         errors      : null,  //Array of element to add error class
-		error_code  : null,  // copy, empty, regex
+        error_code  : null,  // copy, empty, regex
         handlePlaceholder: false,
         required    : true,  //Boolean: the non-required fields will be validated (only if they are not empty), which let the user the chocie to leave it empty or not.
         default_ok  : false, //Boolean
         copy	    : null,  //String: Name of the field element who should have the same value.
         mask	    : null,  //String: i.e (999)999-9999, refer to http://digitalbush.com/projects/masked-input-plugin/
         pattern	    : null,  //RegExp.
-        filetype    : null   //String: each type must be separated by a comma, for file uploads only. i.e: '.mp3,.wav'.
+        filetype    : null,   //String: each type must be separated by a comma, for file uploads only. i.e: '.mp3,.wav'.
+        filesize    : null   //Number: filesize allowed in kb
     };
 
     p.fieldTypeDefaults = {
@@ -65,7 +66,7 @@
     p.meOpts = function(options) {
         var defaults = {
             scope: this,
-            onError: function(fields, errorFields){
+            onError: function(formScope, fields, errorFields) {
                 console.log(fields, errorFields);
             },
             onSuccess: function(fields){
@@ -142,6 +143,12 @@
             errorLogs.push(this.name + "Filetype must be String and each type must be separated by a comma.");
         }
 
+        // check if filesize is a number and correctly formated
+        if (field.filesize && typeof field.filesize !== "number") {
+            fieldError = true;
+            errorLogs.push(this.name + "Filesize must be a Number.");
+        }
+
         if (field.$el.length > 0) {
             field.id          = field.$el.attr('id') || null;
             field.$skin       = (this.$form.find('#skinme-' + field.id).length > 0) ? this.$form.find('#skinme-' + field.id) : null;
@@ -203,6 +210,7 @@
 
         field.$el.on('focus.' + this.name, field, $.proxy(events.focusHandler, this));
         field.$el.on('blur.'  + this.name, field, $.proxy(events.blurHandler, this));
+        field.$el.on('change.'  + this.name, field, $.proxy(events.errorHandler, this));
 
         // add fields to this validation
         this.fields.push(field);
@@ -211,34 +219,34 @@
         privates.fill.call(this, field);
     };
 
-	p.removeField = function(fieldToRemove) {
-		var rfield = null;
-		var rindex = null;
-		$.each(this.fields, function(index, field) {
-			if (fieldToRemove.name == field.name) {
-				rindex = index;
-				rfield = field;
-			}
-		});
-		if (rfield) {
-			if (rfield.$related) rfield.$related.off('click.' + this.name);
-			rfield.$el.off('focus.' + this.name);
-			rfield.$el.off('blur.'  + this.name);
+    p.removeField = function(fieldToRemove) {
+        var rfield = null;
+        var rindex = null;
+        $.each(this.fields, function(index, field) {
+            if (fieldToRemove.name == field.name) {
+                rindex = index;
+                rfield = field;
+            }
+        });
+        if (rfield) {
+            if (rfield.$related) rfield.$related.off('click.' + this.name);
+            rfield.$el.off('focus.' + this.name);
+            rfield.$el.off('blur.'  + this.name);
+            rfield.$el.on('change.'  + this.name);
 
+            this.fields.splice(rindex, 1);
+        }
+    };
 
-			this.fields.splice(rindex, 1);
-		}
-	};
-
-	p.getField = function(name) {
-		var rfield = null;
-		$.each(this.fields, function(index, field) {
-			if (name == field.name) {
-				rfield = field;
-			}
-		});
-		return rfield;
-	};
+    p.getField = function(name) {
+        var rfield = null;
+        $.each(this.fields, function(index, field) {
+            if (name == field.name) {
+                rfield = field;
+            }
+        });
+        return rfield;
+    };
 
     /**
      * Method to call when you want to validate your form
@@ -275,7 +283,7 @@
         var response = false;
         if (this.invalidFields.length > 0) {
             if (typeof this.options.onError === 'function') {
-                this.options.onError.call(this.options.scope, this.fields, this.invalidFields);
+                this.options.onError.call(this.options.scope, this.options.scope, this.fields, this.invalidFields);
             }
         } else {
             response = true;
@@ -328,6 +336,24 @@
             setTimeout(function() {
                 privates.fill.call(scope, field);
             }, 100);
+        },
+        errorHandler: function(e){
+            var scope = this;
+            var field = e.data;
+
+            if (field.enteredValue) {delete field.enteredValue;}
+
+            field.$el.removeClass('error');
+            if (field.$skin) {field.$skin.removeClass('error');}
+            if (field.$label) {field.$label.removeClass('error');}
+            if (field.$related) {field.$related.removeClass('error');}
+            if (field.errors) {
+                $.each(field.errors, function(index, item) {
+                    $(item).removeClass('error');
+                });
+            }
+
+            privates.fill.call(scope, field);
         }
     };
 
@@ -360,7 +386,7 @@
             return regexp;
         },
         selectRule: function(field) {
-            field.$el[0].defautValue = field.$el.find('option:first-child').val();
+            field.$el[0].defautValue = "";
             return null;
         },
         checkboxRule: function(field) {
@@ -383,16 +409,16 @@
             var valid = true;
 
             var needToValid = false;
-			field.error_code = null;
+            field.error_code = null;
             if (field.required) {needToValid = true;}
             if (!field.required && field.placeholder != val && field.error != val && field.$el[0].defautValue != val) {needToValid = true;}
             if (!field.required && field.$copy && field.$copy.val() != field.$copy[0].defautValue) {needToValid = true;}
             if (!field.required && field.$el[0].$copied && field.$el[0].$copied.val() != field.$el[0].$copied[0].defautValue) {needToValid = true;}
 
             if (needToValid) {
-				if (valid && !field.default_ok && field.$el[0].defautValue == val) {valid = false; field.error_code = "empty";} // validate empty
-				if (field.$el[0].$copied && field.$el[0].$copied.val() != val) {valid = false; field.error_code = "copy";} // validate copy
-				if (field.$copy && field.$copy.val() != val) {valid = false; field.error_code = "copy";} // validate copy
+                if (valid && !field.default_ok && field.$el[0].defautValue == val) {valid = false; field.error_code = "empty";} // validate empty
+                if (field.$el[0].$copied && field.$el[0].$copied.val() != val) {valid = false; field.error_code = "copy";} // validate copy
+                if (field.$copy && field.$copy.val() != val) {valid = false; field.error_code = "copy";} // validate copy
                 if (valid && !field.rule.test(val)) {valid = false; field.error_code = "regex";} // validate rule
                 if (valid && field.placeholder && field.placeholder == val) {valid = false;} // validate placeholder
                 if (valid && field.error && field.error == val) {valid = false;} // validate error
@@ -419,15 +445,31 @@
             return valid;
         },
         fileValidation: function(field) {
-            var val   = field.$el.val();
+            var val = field.$el.val();
             var valid = true;
 
             var inArray = false;
             var regexp = /(?:\.([^.]+))?$/;
             var filetype = regexp.exec(val);
-            for (var key in field.filetype) {if (field.filetype[key] == filetype[0]) {inArray = true;}}
 
-            if (field.required && !inArray) {valid = false;}
+            for (var key in field.filetype) {
+                if (field.filetype[key] == filetype[0]) {
+                    inArray = true;
+                }
+            }
+
+            if (field.required || field.$el[0].files[0]) {
+                if(!field.$el[0].files[0]){
+                    valid = false;
+                }
+                else if (field.$el[0].files[0].size > field.filesize) {
+                    valid = false;
+                }
+            }
+
+            if ((field.required || field.$el[0].files[0]) && !inArray) {
+                valid = false;
+            }
             return valid;
         }
     };
@@ -461,7 +503,7 @@
             } else if (field.type == 'checkbox' || field.type == 'radio') {
                 field.$el.attr('checked', false);
             }
-			field.$el.trigger('change', 'ValidateMe');
+            field.$el.trigger('change', 'ValidateMe');
 
             privates.fill.call(this, field);
         },
