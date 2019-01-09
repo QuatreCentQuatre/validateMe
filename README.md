@@ -4,6 +4,12 @@ An easy way to validate forms for your website.
 
 ---
 
+### Version
+
+**2.0.0**
+
+---
+
 ### Dependencies
 
 **jQuery-1.10 ++** (http://jquery.com/download/)
