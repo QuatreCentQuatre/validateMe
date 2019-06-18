@@ -6,7 +6,7 @@ An easy way to validate forms for your website.
 
 ### Version
 
-**2.0.0**
+**2.0.1**
 
 ---
 

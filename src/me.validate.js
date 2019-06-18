@@ -283,7 +283,7 @@
         var response = false;
         if (this.invalidFields.length > 0) {
             if (typeof this.options.onError === 'function') {
-                this.options.onError.call(this.options.scope, this.options.scope, this.fields, this.invalidFields);
+                this.options.onError.call(this.options.scope, this.fields, this.invalidFields);
             }
         } else {
             response = true;
