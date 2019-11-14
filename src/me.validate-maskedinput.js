@@ -83,7 +83,7 @@
                 }
 
                 function E(e) {
-                    var t, n, r = S.val(), s = -1;
+                    var t, pos, n, r = S.val(), s = -1;
                     for (t = 0, pos = 0; p > t; t++)if (l[t]) {
                         for (x[t] = i.placeholder; pos++ < r.length;)if (n = r.charAt(pos - 1), l[t].test(n)) {
                             x[t] = n, s = t;
