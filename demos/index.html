@@ -1,14 +1,6 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="css/module.form.css">
-    <style>.error{color:red;}</style>
-
-    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-
-	<script src="../src/me.validate.js"></script>
-    <script src="../src/me.validate-maskedinput.js"></script>
-
-	<script src="js/app.main.js"></script>
 </head>
 <body>
 <div id="content-ctn">
@@ -17,13 +9,12 @@
 			validate<span>Me</span>
 		</h1>
 	</div>
-	<form class="form-account-login" method="post" action="">
+	<form class="form-account-login" method="post" action="" ajax="true">
 		<div class="inner">
 			<div class="row">
 				<p>No Placeholder</p>
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
-						<div class="input-messages" me:validate:related="no-placeholder"></div>
 						<input name="no-placeholder" type="text" value="" autocomplete="off" />
 					</div>
 				</div>
@@ -32,8 +23,7 @@
 				<p>Type Postal</p>
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
-						<div class="input-messages" me:validate:related="postal"></div>
-						<input name="postal" type="text" value="" me:validate:placeholder="Your postal code" autocomplete="off" />
+						<input name="postal" type="text" value="" autocomplete="off" />
 					</div>
 				</div>
 			</div>
@@ -41,8 +31,7 @@
 				<p>Type Phone</p>
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
-						<div class="input-messages" me:validate:related="phone"></div>
-						<input name="phone" type="text" value="" me:validate:placeholder="Your phone number" autocomplete="off" />
+						<input name="phone" type="text" value="" autocomplete="off" />
 					</div>
 				</div>
 			</div>
@@ -50,8 +39,7 @@
 				<p>Type Email</p>
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
-						<div class="input-messages" me:validate:related="email"></div>
-						<input name="email" type="text" value="" me:validate:placeholder="Your email" autocomplete="off" />
+						<input name="email" type="text" value="" autocomplete="off" />
 					</div>
 				</div>
 			</div>
@@ -59,8 +47,7 @@
 				<p>Copy Email</p>
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
-						<div class="input-messages" me:validate:related="email-copy"></div>
-						<input name="email-copy" type="text" value="" me:validate:placeholder="Re-enter your email" autocomplete="off" />
+						<input name="email-copy" type="text" value="" autocomplete="off" />
 					</div>
 				</div>
 			</div>
@@ -68,8 +55,7 @@
 				<p>Password</p>
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
-						<div class="input-messages" me:validate:related="password"></div>
-						<input name="password" type="password" value="" me:validate:placeholder="Your password" autocomplete="off" />
+						<input name="password" type="password" value="" autocomplete="off" />
 					</div>
 				</div>
 			</div>
@@ -79,8 +65,7 @@
 				<p>Not required</p>
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
-						<div class="input-messages" me:validate:related="not-required"></div>
-						<input name="not-required" type="text" me:validate:placeholder="Name" value="" autocomplete="off" />
+						<input name="not-required" type="text" value="" autocomplete="off" />
 					</div>
 				</div>
 			</div>
@@ -89,7 +74,7 @@
 				<div class="input-ctn">
 					<div class="input-messages-ctn">
 						<div class="input-messages"></div>
-						<input id="active_inactive" name="active_inactive" type="text" value="Inactive Field" me:validate:placeholder="Active Field" autocomplete="off" />
+						<input id="active_inactive" name="active_inactive" type="text" value="" autocomplete="off" />
 					</div>
 				</div>
 				<div class="btn toggler-btn">
@@ -114,12 +99,6 @@
 					</label>
 				</div>
 			</div>
-			<div class="row">
-				<p>File</p>
-				<div class="file">
-					<input type="file" id="file" name="file"/>
-				</div>
-			</div>
 		</div>
 		<input class="hidden" type="submit" value="Submit"/>
 		<div class="full">
@@ -129,5 +108,10 @@
 		</div>
 	</form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="../src/me-validate.js"></script>
+<script src="js/app.main.js"></script>
+
 </body>
 </html>

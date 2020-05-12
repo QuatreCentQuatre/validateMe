@@ -130,7 +130,7 @@ body #content-ctn {
 }
 body #content-ctn #header {
   width: 100%;
-  background-color: #ea4444;
+  background-color: #EA4444;
 }
 body #content-ctn #header h1 {
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
@@ -140,7 +140,7 @@ body #content-ctn #header h1 {
   padding: 10px 0;
 }
 body #content-ctn #header h1 span {
-  color: #ff8a8a;
+  color: #FF8A8A;
 }
 body #content-ctn form {
   *zoom: 1;
@@ -193,7 +193,7 @@ body #content-ctn form .inner .row p {
 }
 body #content-ctn form .btn {
   display: inline-block;
-  background-color: #ea4444;
+  background-color: #EA4444;
   margin: 0 auto;
 }
 body #content-ctn form .btn.toggler-btn {
@@ -260,15 +260,15 @@ body #content-ctn form .input-ctn .input-messages {
 body #content-ctn form .input-ctn input {
   border: 2px solid #555555;
 }
-body #content-ctn form .input-ctn input.error {
-  border: 2px solid #f46166;
+body #content-ctn form .input-ctn input.has-error {
+  border-color: red;
+  color: red;
 }
 body #content-ctn form .input-ctn .input-messages {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 1;
-  background-image: url("../img/ie-bg.png");
   border: none;
   border-left: 2px solid transparent;
   border-right: 2px solid transparent;
@@ -340,3 +340,4 @@ body #content-ctn form .input-ctn textarea.error {
     margin-bottom: 2px;
   }
 }
+/*# sourceMappingURL=module.form.css.map */
