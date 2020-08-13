@@ -3,11 +3,23 @@
   "version": "3.0.0",
   "author": "QuatreCentQuatre team <info@quatrecentquatre.com> (https://www.quatrecentquatre.com/)",
   "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "production": "node_modules/gulp/bin/gulp.js build"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/QuatreCentQuatre/validateMe"
   },
   "dependencies": {
     "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-uglify": "^3.0.2"
   }
 }
