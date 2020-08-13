@@ -15,7 +15,7 @@ Dependencies
 First, you'll need to link jQuery and validateMe file in your project 
 ```html
 <script type="text/javascript" src="/path/to/directory/node_modules/jquery/dist/jquery.js"></script>
-<script type="text/javascript" src="/path/to/directory/me-validate.js"></script>
+<script type="text/javascript" src="/path/to/directory/node_modules/validate-me/dist/me-validate.min.js""></script>
 ```
 Here you go ! You're now ready to use validateMe.
 
