@@ -62,6 +62,12 @@ class ValidateMe {
             if(!fieldValid){
                 this.invalidFields.push(field);
             }
+    
+            if(field.type === 'file'){
+                field.value = field.$el.files;
+            } else {
+                field.value = field.$el.val();
+            }
         }
         
         if(this.hasError){
