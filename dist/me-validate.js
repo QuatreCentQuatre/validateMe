@@ -86,6 +86,12 @@ var ValidateMe = /*#__PURE__*/function () {
           if (!fieldValid) {
             this.invalidFields.push(field);
           }
+
+          if (field.type === 'file') {
+            field.value = field.$el.files;
+          } else {
+            field.value = field.$el.val();
+          }
         }
       } catch (err) {
         _iterator.e(err);
