@@ -2,13 +2,6 @@ validateMe
 ========
 ValidateMe helps you handle simple validations for any form.
 
-Version - 3.0.1
-- Add value key in validate field
-
-Version - 3.0.0
-- Refactor for ES6
-- Demo updated
-
 Dependencies
 
 - jQuery (https://jquery.com/)
