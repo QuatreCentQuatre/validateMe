@@ -36,6 +36,21 @@ validation.addField({name: 'checkbox'});
 validation.addField({name: 'radio'});
 ```
 
+You can also assign fields by passing it as an option when creating a new instance of Me.validate
+```javascript
+let validation = new Me.validate({
+    $el: $('form'),
+    fields: [
+      {name: 'no-placeholder'},
+      {name: 'not-required', required:false},
+      {name: 'postal', type:'zipcode'},
+      ...
+    ],
+    onValidationError: function(fields){...},
+    onValidationSuccess: function(fields, errorFields){...},
+});
+```
+
 When you instanciate a new validation, you need to pass an object with 3 required key.
 - **$el** : Needs to be a jQuery element
 - **onValidationError** : This will be the callback function when error occurs
@@ -52,6 +67,7 @@ When adding a field into validation, there's some params thant you need to speci
 - default_ok: (Boolean) If the default option of the select can be a valid option.
 - file_size: (Number) Filesize allowed in kb
 - file_type: (Array) Types allowed. Exemple: ['.png', '.jpg']
+- mask_option: (IMask) //See https://imask.js.org/
 
 Before submitting the form, you'll be able to call a simple function that will validate all field added. All you need to do is add this line of code
 ```javascript
@@ -82,6 +98,14 @@ Parameters:
  - name (String)
   
 This function will return the wanted field based on its name.
+
+###updateMask(fieldName, method, methodParams)
+Parameters:
+ - fieldName (The name of the masked field that needs to be updated)
+ - method (The IMask method that need to be run on the mask currently applied)
+ - methodParams (Params needed to be pass to the function)
+  
+This function will update the iMask object options
 
 ###validate()
 This function will validate all fields added previously.

@@ -15,19 +15,23 @@ $(document).ready(function(){
 		initialize(){
 			this.validation = new Me.validate({
 				$el: $form,
+				fields: [
+					{name: 'no-placeholder'},
+					{name: 'not-required', required:false},
+					{name: 'postal', type:'zipcode'},
+					{name: 'phone', type:'phone', mask_options: {
+							mask: '(000) 000-0000',
+							lazy: false
+					}},
+					{name: 'email', type:'email', required:false},
+					{name: 'email-copy', type:'email', copy:'email', required:false},
+					{name: 'password', required:false},
+					{name: 'checkbox', required:false},
+					{name: 'radio', required:false}
+				],
 				onValidationError: (...params)=>{this.onValidationError(...params)},
 				onValidationSuccess: (...params)=>{this.onValidationSuccess(...params)},
 			});
-			
-			this.validation.addField({name: 'no-placeholder'});
-			this.validation.addField({name: 'not-required', required:false});
-			this.validation.addField({name: 'postal', type:'zipcode'});
-			this.validation.addField({name: 'phone', type:'phone'});
-			this.validation.addField({name: 'email', type:'email'});
-			this.validation.addField({name: 'email-copy', type:'email', copy:'email'});
-			this.validation.addField({name: 'password'});
-			this.validation.addField({name: 'checkbox'});
-			this.validation.addField({name: 'radio'});
 			
 			this.addEvents();
 		},
