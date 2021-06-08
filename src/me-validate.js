@@ -1,4 +1,4 @@
-import IMask from "imask";
+import IMask from 'imask';
 
 class ValidateMe {
     constructor(form){
