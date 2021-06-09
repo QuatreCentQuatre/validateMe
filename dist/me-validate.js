@@ -4883,6 +4883,11 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
   2: [function (require, module, exports) {
     "use strict";
 
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports.ValidateMe = void 0;
+
     var _imask = _interopRequireDefault(require("imask"));
 
     function _interopRequireDefault(obj) {
@@ -4908,9 +4913,9 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
     }
 
     function _createForOfIteratorHelper(o, allowArrayLike) {
-      var it;
+      var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
 
-      if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+      if (!it) {
         if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
           if (it) o = it;
           var i = 0;
@@ -4943,7 +4948,7 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
           err;
       return {
         s: function s() {
-          it = o[Symbol.iterator]();
+          it = it.call(o);
         },
         n: function n() {
           var step = it.next();
@@ -5205,14 +5210,17 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
         }
       }, {
         key: "form",
-        set: function set(scope) {
-          this._form = scope;
-        },
         get: function get() {
           return this._form;
+        },
+        set: function set(scope) {
+          this._form = scope;
         }
       }, {
         key: "invalidFields",
+        get: function get() {
+          return this._invalidFields;
+        },
         set: function set(arr) {
           if (_typeof(arr) !== 'object') {
             console.error('The arr parameter must be an array');
@@ -5220,9 +5228,6 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
           }
 
           this._invalidFields = arr;
-        },
-        get: function get() {
-          return this._invalidFields;
         }
       }, {
         key: "baseFieldAttr",
@@ -5407,6 +5412,8 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
 
       return ValidateMe;
     }();
+
+    exports.ValidateMe = ValidateMe;
 
     if (!window.Me) {
       window.Me = {};

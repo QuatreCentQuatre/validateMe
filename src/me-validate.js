@@ -311,3 +311,5 @@ class ValidateMe {
 
 if(!window.Me){window.Me = {};}
 Me.validate = ValidateMe;
+
+export { ValidateMe };
