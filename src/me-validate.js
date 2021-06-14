@@ -273,13 +273,9 @@ class ValidateMe {
                 }
                 
                 for(let file of field.$el[0].files){
-                    for (let type in field.file_type) {
-                        let filetype = regexpFiletypes.exec(file.name);
-                        if (field.file_type[type] != filetype[0]) {
-                            inFileTypesArray = false;
-                        }
-                    }
+                    inFileTypesArray = field.file_type.includes(regexpFiletypes.exec(file.name)[0])
                 }
+                
                 
                 if(!inFileTypesArray){
                     isValid = false;

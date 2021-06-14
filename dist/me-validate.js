@@ -5357,14 +5357,7 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
               try {
                 for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
                   var _file = _step3.value;
-
-                  for (var type in field.file_type) {
-                    var filetype = regexpFiletypes.exec(_file.name);
-
-                    if (field.file_type[type] != filetype[0]) {
-                      inFileTypesArray = false;
-                    }
-                  }
+                  inFileTypesArray = field.file_type.includes(regexpFiletypes.exec(_file.name)[0]);
                 }
               } catch (err) {
                 _iterator3.e(err);
