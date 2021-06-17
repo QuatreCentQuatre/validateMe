@@ -1,6 +1,9 @@
 validateMe
 ========
 
+Version - 3.2.0
+- Add format param validation
+
 Version - 3.1.1
 - Fix file_type detection to consider all type in array
 
