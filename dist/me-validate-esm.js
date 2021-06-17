@@ -5050,6 +5050,11 @@ class ValidateMe {
       console.error(`Validation must be function.`);
     }
 
+    if (field.format && typeof field.format !== "function") {
+      isValid = false;
+      console.error(`Format must be a function.`);
+    }
+
     return isValid;
   }
 
