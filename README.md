@@ -68,6 +68,7 @@ When adding a field into validation, there's some params thant you need to speci
 - file_size: (Number) Filesize allowed in kb
 - file_type: (Array) Types allowed. Exemple: ['.png', '.jpg']
 - mask_option: (IMask) //See https://imask.js.org/
+- format: (Function) Function to format field value into FormMe before sending data through ajax call
 
 Before submitting the form, you'll be able to call a simple function that will validate all field added. All you need to do is add this line of code
 ```javascript
@@ -125,4 +126,5 @@ This function reset all value of the form to initial value.
 - default_ok: (Boolean) If the default option of the select can be a valid option.
 - file_size: (Number) Filesize allowed in kb
 - file_type: (Array) Types allowed. Exemple: ['.png', '.jpg']
+- format: (Function) Function to format field value into FormMe before sending data through ajax call
 
