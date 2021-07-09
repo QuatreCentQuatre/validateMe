@@ -30,7 +30,7 @@ function es5() {
       .pipe(gulp.dest(distPath))
     );
 }
-function esm() {
+function es() {
   return (
     browserify({
       entries: [sourceFiles],
@@ -49,7 +49,7 @@ function esm() {
         )]
     })
     .bundle()
-    .pipe(source('me-validate-esm.js'))
+    .pipe(source('me-validate-es.js'))
     .pipe(buffer())
     .pipe(gulp.dest(distPath))
     .pipe(gulpUglifyES())
@@ -58,4 +58,4 @@ function esm() {
   );
 }
 
-exports.build = gulp.parallel(esm, es5);
+exports.build = gulp.parallel(es, es5);

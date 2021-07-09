@@ -4975,10 +4975,10 @@ class ValidateMe {
       if (fieldValid) {
         if (!!this.validations[field.type]) {
           fieldValid = !!this.validations[field.type](field);
+        }
 
-          if (fieldValid && !!field.validation) {
-            fieldValid = !!field.validation(field);
-          }
+        if (fieldValid && !!field.validation) {
+          fieldValid = !!field.validation(field);
         }
       }
 

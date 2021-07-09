@@ -1,6 +1,10 @@
 validateMe
 ========
 
+Version - 3.2.1
+- Fix custom validation for type that doesnt have basic validation in validations function
+
+
 Version - 3.2.0
 - Add format param validation
 
