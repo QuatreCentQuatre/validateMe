@@ -1,9 +1,9 @@
-$(document).ready(function(){
-	let $form = $('.form-account-login');
+document.addEventListener("DOMContentLoaded", function() {
+	let formEl = document.querySelector('#form-account-login');
 	
 	let form = {
-		$el: $form,
-		ajax: !!$form.attr('ajax'),
+		el: formEl,
+		ajax: !!formEl.hasAttribute('ajax'),
 		classes: {
 			valid: 			'is-valid',
 			invalid: 		'is-invalid',
@@ -14,20 +14,13 @@ $(document).ready(function(){
 		antiSpam: false,
 		initialize(){
 			this.validation = new Me.validate({
-				$el: $form,
+				element: formEl,
 				fields: [
-					{name: 'no-placeholder'},
-					{name: 'not-required', required:false},
-					{name: 'postal', type:'zipcode'},
-					{name: 'phone', type:'phone', mask_options: {
-							mask: '(000) 000-0000',
-							lazy: false
-					}},
-					{name: 'email', type:'email', required:false},
-					{name: 'email-copy', type:'email', copy:'email', required:false},
-					{name: 'password', required:false},
-					{name: 'checkbox', required:false},
-					{name: 'radio', required:false}
+					{name: 'no-placeholder', required: true},
+					// {name: 'phone', type:'phone', mask_options: {
+					// 		mask: '(000) 000-0000',
+					// 		lazy: false
+					// }}
 				],
 				onValidationError: (...params)=>{this.onValidationError(...params)},
 				onValidationSuccess: (...params)=>{this.onValidationSuccess(...params)},
@@ -36,9 +29,9 @@ $(document).ready(function(){
 			this.addEvents();
 		},
 		addEvents(){
-			this.$el.find('.btn-submit').on('click.formDemo', (e)=>{this.submitHandler(e)});
-			this.$el.on('submit.formDemo', (e)=>{this.submitHandler(e)});
-			this.$el.find('#active_toggler').on('click.activeToggler', (e)=>{this.toggleFieldValidation(e)});
+			this.el.querySelector('.btn-submit').addEventListener('click', (e)=>{this.submitHandler(e)});
+			this.el.addEventListener('submit', (e)=>{this.submitHandler(e)});
+			this.el.querySelector('#active_toggler').addEventListener('click', (e)=>{this.toggleFieldValidation(e)});
 		},
 		toggleFieldValidation(e){
 			if(this.validation.getField('active_inactive')){
@@ -52,40 +45,41 @@ $(document).ready(function(){
 			fields.forEach((field, index) => {
 				this.handleValidationSuccessField(field);
 			});
-			
-			this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
-			
+
+			this.el.classList.remove(this.classes.invalid);
+			this.el.classList.add(this.classes.valid);
+
 			if (this.ajax) {
-				this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+				this.handleAjaxSend(new FormData(this.el));
 			}
 		},
 		onValidationError(fields, errorFields){
 			fields.forEach((field, index) => {
 				this.handleValidationSuccessField(field);
 			});
-			
+
 			errorFields.forEach((field, index) =>{
 				this.handleValidationErrorField(field);
 			});
-			
-			this.$el.addClass(this.classes.invalid);
+
+			this.el.classList.add(this.classes.invalid);
 		},
 		handleValidationSuccessField(field){
 			//hide previously visible errors from a past validation
 			if(field.error){
-				field.error.addClass('hide').attr('aria-hidden', true);
+				field.error.setAttribute('aria-hidden', true).classList.add('hide');
 			}
-			field.$el.removeClass(this.classes.error);
+			field.element.classList.remove(this.classes.error);
 		},
 		handleValidationErrorField(field){
 			if(field.error){
-				field.error.removeClass('hide').attr('aria-hidden', false);
+				field.error.removeAttribute('aria-hidden').classList.remove('hide');
 			}
-			field.$el.addClass(this.classes.error);
+			field.element.classList.add(this.classes.error);
 		},
 		submitHandler(e){
 			if (this.ajax && e) {e.preventDefault();}
-			
+
 			if(!this.validation.validate()){
 				e.preventDefault();
 			}
@@ -93,45 +87,47 @@ $(document).ready(function(){
 		handleAjaxSend(formData){
 			if(this.antiSpam) {return;}
 			this.antiSpam = true;
-			
-			$.ajax({
-				method: 'POST',
-				url: '/',
-				data: formData,
-				dataType: 'json',
-				success: (...params) => {this.ajaxSuccess(...params)},
-				error: (...params) => {this.ajaxError(...params)}
+
+			fetch('/', {
+				method: 'post',
+				body: formData,
+			}).then(response=>{
+				// @NOTE
+				// If we receive a 404, we will receive a success so we need to verify if the code status is an error and reject the promise.
+				if (!response.ok || response.status < 200 || response.status > 300) {
+					throw response;
+				}
+
+				return response;
+			}).then(response=>{
+				// @NOTE
+				// Detect if the returned content is in json or html otherwise we return everything
+				if(response.headers.get('content-type').includes('application/json')){
+					return response.json();
+				} else{
+					return response;
+				}
+			}).then(response => {
+				this.ajaxSuccess(response)
+			}).catch(error => {
+				this.ajaxError(error);
 			});
+
 		},
 		ajaxSuccess(data){
 			this.antiSpam = false;
 			
 			// You can reset your form here
-			this.$el.removeClass(this.classes.serverError).addClass(this.classes.serverSuccess);
+			this.el.classList.remove(this.classes.serverError);
+			this.el.classList.add(this.classes.serverSuccess);
 		},
 		
 		ajaxError(error){
 			this.antiSpam = false;
-			this.$el.removeClass(this.classes.serverSuccess).addClass(this.classes.serverError);
+			this.el.classList.remove(this.classes.serverSuccess);
+			this.el.classList.add(this.classes.serverError);
+			throw error;
 		},
-		
-		formatFormData(data) {
-			let formattedData = {};
-			
-			data.forEach(function(item, index) {
-				let field = $(`[name="${item.name}"]`);
-				if(item.value === "" || field.disabled){return;}
-				formattedData[item.name] = item.value;
-				
-				if (item.filetype != undefined) {
-					if (field[0].files[0]) {
-						formattedData.append(item.name, field[0].files[0]);
-					}
-				}
-			});
-			
-			return formattedData;
-		}
 	};
 	
 	form.initialize();

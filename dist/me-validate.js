@@ -5044,27 +5044,27 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
       }, {
         key: "addField",
         value: function addField(options) {
-          var field = $.extend({}, this.baseFieldAttr, options);
-          field.$el = this.form.$el.find('[name="' + field.name + '"]');
+          var field = Object.assign({}, this.baseFieldAttr, options);
+          field.element = this.form.element.querySelector("[name=\"".concat(field.name, "\"]"));
           if (!this.isValidOptions(field) || !!this.getField(field.name)) return;
-          field.id = field.$el.attr('id') || null;
-          field.placeholder = field.$el.attr('placeholder') || null;
+          field.id = field.element.getAttribute('id') || null;
+          field.placeholder = field.element.getAttribute('placeholder') || null;
 
           if (!field.type) {
-            var tag = field.$el.prop("tagName").toLowerCase();
-            field.type = tag === "input" ? field.$el.prop("type").toLowerCase() : tag;
+            var tag = field.element.tagName.toLowerCase();
+            field.type = tag === "input" ? field.element.type.toLowerCase() : tag;
 
             if (field.type === 'select') {
-              field.defaultValue = field.$el.find('[default]').length > 0 ? field.$el.find('[default]') : field.$el.find('option').eq(0);
+              field.defaultValue = field.element.querySelector('[default]') ? field.element.querySelector('[default]') : field.element.querySelectorAll('option').eq(0);
             }
           }
 
-          field.$copy = field.copy ? this.form.$el.find('[name="' + field.copy + '"]') : null;
+          field.copyElement = field.copy ? this.form.element.querySelector("[name=\"".concat(field.copy, "\"]")) : null;
           field.regex = !!field.regex ? field.regex : !!this.customFieldType[field.type] ? this.customFieldType[field.type].regex : null;
           field.mask_options = !!field.mask_options ? field.mask_options : !!this.customFieldType[field.type] ? this.customFieldType[field.type].mask_options : null;
 
           if (field.mask_options) {
-            field.mask = (0, _imask["default"])(field.$el[0], field.mask_options);
+            field.mask = (0, _imask["default"])(field.element, field.mask_options);
           }
 
           this.fields.push(field);
@@ -5122,9 +5122,9 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
               }
 
               if (field.type === 'file') {
-                field.value = field.$el.files;
+                field.value = field.element.files;
               } else {
-                field.value = field.$el.val();
+                field.value = field.element.value;
               }
             }
           } catch (err) {
@@ -5136,7 +5136,7 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
           if (this.hasError) {
             this.form.onValidationError(this.fields, this.invalidFields);
           } else {
-            if (!!this.form.$el.attr('ajax')) {
+            if (!!this.form.element.hasAttribute('ajax')) {
               this.form.onValidationSuccess(this.fields);
             }
           }
@@ -5149,7 +5149,7 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
         value: function isValidOptions(field) {
           var isValid = true;
 
-          if (field.$el.length === 0) {
+          if (field.element.length === 0) {
             isValid = false;
             console.error("Couldn't find field with associated name :: ".concat(field.name));
           }
@@ -5166,7 +5166,7 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
             console.error("Parammeter 'required' of ".concat(field.name, " the field must be boolean."));
           }
 
-          if (field.copy && this.form.$el.find('[name="' + field.copy + '"]').length < 1) {
+          if (field.copy && this.form.element.querySelector("[name=\"' + ".concat(field.copy, " + '\"]"))) {
             isValid = false;
             console.error("Couldn't find field that need to have the same value with associated name :: ".concat(field.name));
           }
@@ -5203,14 +5203,15 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
         value: function reset() {
           $.each(this.fields, function (index, field) {
             if (field.type === 'checkbox' || field.type === 'radio') {
-              field.$el.attr('checked', false);
+              field.element.setAttribute('checked', false);
+              field.element.removeAttribute('checked');
             } else if (field.type === 'select') {
-              field.$el.val(field.defaultValue.val());
+              field.element.value = field.defaultValue.value;
             } else {
-              field.$el.val('');
+              field.element.value = '';
             }
 
-            field.$el.trigger('change');
+            field.element.dispatchEvent(new Event('change'));
           });
         }
       }, {
@@ -5284,26 +5285,28 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
       }, {
         key: "validations",
         get: function get() {
+          var _this = this;
+
           return {
             "default": function _default(field) {
               var isValid = true;
-              var needToValid = !!field.required || !field.required && (!!field.$el.val() || !!field.$copy && field.$copy.val().length > 1);
+              var needToValid = !!field.required || !field.required && (!!field.element.value || !!field.copyElement && field.copyElement.value != '');
               field.error_code = null;
 
               if (needToValid) {
-                if (isValid && !field.$el.val()) {
+                if (isValid && !field.element.value) {
                   isValid = false;
                   field.error_code = 'empty';
                 } // validate empty
 
 
-                if (isValid && !!field.$copy && field.$copy.val() !== field.$el.val()) {
+                if (isValid && !!field.copyElement && field.copyElement.value !== field.element.value) {
                   isValid = false;
                   field.error_code = 'copy';
                 } // validate copy
 
 
-                if (isValid && !!field.regex && !field.regex.test(field.$el.val())) {
+                if (isValid && !!field.regex && !field.regex.test(field.element.value)) {
                   isValid = false;
                   field.error_code = 'regex';
                 }
@@ -5318,7 +5321,7 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
             select: function select(field) {
               var isValid = true;
 
-              if (field.required && !field.default_ok && field.$el.val() === field.defaultValue.val()) {
+              if (field.required && !field.default_ok && field.element.value === field.defaultValue.value) {
                 isValid = false;
                 field.error_code = 'default_ok';
               }
@@ -5328,9 +5331,18 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
             checkbox: function checkbox(field) {
               var isValid = true;
 
-              if (field.required && field.$el.filter(":checked").length === 0) {
+              var elements = _this.form.element.querySelectorAll("[name=\"".concat(field.name, "\"]"));
+
+              var countSelected = 0;
+              elements.forEach(function (element, index) {
+                if (element.checked === true) {
+                  countSelected++;
+                }
+              });
+
+              if (countSelected === 0) {
                 isValid = false;
-                field.error_code = 'empty';
+                field.error_code = 'no-selection';
               }
 
               return isValid;
@@ -5338,31 +5350,44 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
             radio: function radio(field) {
               var isValid = true;
 
-              if (field.required && field.$el.filter(":checked").length === 0) {
+              var elements = _this.form.element.querySelectorAll("[name=\"".concat(field.name, "\"]"));
+
+              var countSelected = 0;
+              elements.forEach(function (element, index) {
+                if (element.checked === true) {
+                  countSelected++;
+                }
+              });
+
+              if (countSelected === 0) {
                 isValid = false;
-                field.error_code = 'empty';
+                field.error_code = 'no-selection';
               }
 
               return isValid;
             },
             file: function file(field) {
-              var isValid = true;
-              var inFileTypesArray = true;
+              var isValid = false;
               var regexpFiletypes = /(?:\.([^.]+))?$/;
 
-              if (field.required && field.$el[0].files.length == 0) {
+              if (field.required && field.element.files.length == 0) {
                 isValid = false;
                 field.error_code = 'empty';
                 return isValid;
               }
 
-              var _iterator3 = _createForOfIteratorHelper(field.$el[0].files),
+              var countInvalidType = 0;
+
+              var _iterator3 = _createForOfIteratorHelper(field.element.files),
                   _step3;
 
               try {
                 for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
                   var _file = _step3.value;
-                  inFileTypesArray = field.file_type.includes(regexpFiletypes.exec(_file.name)[0]);
+
+                  if (!field.file_type.includes(regexpFiletypes.exec(_file.name)[0])) {
+                    countInvalidType++;
+                  }
                 }
               } catch (err) {
                 _iterator3.e(err);
@@ -5370,21 +5395,26 @@ function _typeof2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "funct
                 _iterator3.f();
               }
 
-              if (!inFileTypesArray) {
+              if (countInvalidType > 0) {
                 isValid = false;
                 field.error_code = 'filetype';
                 return isValid;
               }
 
               if (field.file_size) {
-                var _iterator4 = _createForOfIteratorHelper(field.$el[0].files),
+                var totalKb = 0;
+
+                var _iterator4 = _createForOfIteratorHelper(field.element.files),
                     _step4;
 
                 try {
                   for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
                     var file = _step4.value; //bytes to kilobytes for simplicity...
 
-                    if (file.size / 1000 > field.file_size) {
+                    var sizeToKb = file.size / 1000;
+                    totalKb += sizeToKb;
+
+                    if (sizeToKb > field.file_size || totalKb > field.file_size) {
                       isValid = false;
                       field.error_code = 'size';
                       return isValid;

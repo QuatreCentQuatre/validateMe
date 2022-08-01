@@ -2,15 +2,10 @@ validateMe
 ========
 ValidateMe helps you handle simple validations for any form.
 
-Dependencies
-
-- jQuery (https://jquery.com/)
-
 ## How to implement
 
 First, you'll need to link jQuery and validateMe file in your project 
 ```html
-<script type="text/javascript" src="/path/to/directory/node_modules/jquery/dist/jquery.js"></script>
 <script type="text/javascript" src="/path/to/directory/node_modules/validate-me/dist/me-validate.min.js""></script>
 ```
 Here you go ! You're now ready to use validateMe.
@@ -19,40 +14,23 @@ Here you go ! You're now ready to use validateMe.
 
 Then in your script, you'll need to declare a new instance of a validation class and then assign all fields you want to have validation on.
 ```javascript
-let validation = new Me.validate({
-    $el: $('form'),
-    onValidationError: function(fields){...},
-    onValidationSuccess: function(fields, errorFields){...},
-});
 
-validation.addField({name: 'no-placeholder'});
-validation.addField({name: 'not-required', required:false});
-validation.addField({name: 'postal', type:'zipcode'});
-validation.addField({name: 'phone', type:'phone'});
-validation.addField({name: 'email', type:'email'});
-validation.addField({name: 'email-copy', type:'email', copy:'email'});
-validation.addField({name: 'password'});
-validation.addField({name: 'checkbox'});
-validation.addField({name: 'radio'});
-```
-
-You can also assign fields by passing it as an option when creating a new instance of Me.validate
-```javascript
-let validation = new Me.validate({
-    $el: $('form'),
+this.validation = new Me.validate({
+    element: document.querySelector('#form'),
     fields: [
-      {name: 'no-placeholder'},
-      {name: 'not-required', required:false},
-      {name: 'postal', type:'zipcode'},
-      ...
+        {name: 'no-placeholder', required: true},
+        // {name: 'phone', type:'phone', mask_options: {
+        // 		mask: '(000) 000-0000',
+        // 		lazy: false
+        // }}
     ],
-    onValidationError: function(fields){...},
-    onValidationSuccess: function(fields, errorFields){...},
+    onValidationError: (...params)=>{this.onValidationError(...params)},
+    onValidationSuccess: (...params)=>{this.onValidationSuccess(...params)},
 });
 ```
 
 When you instanciate a new validation, you need to pass an object with 3 required key.
-- **$el** : Needs to be a jQuery element
+- **element**
 - **onValidationError** : This will be the callback function when error occurs
 - **onValidationSuccess** : This will be the callback function when success occurs
 
