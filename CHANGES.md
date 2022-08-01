@@ -1,6 +1,9 @@
 validateMe
 ========
 
+Version - 4.0.0
+- Refactor to pure javascript
+
 Version - 3.2.1
 - Fix custom validation for type that doesnt have basic validation in validations function
 

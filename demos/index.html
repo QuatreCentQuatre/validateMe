@@ -9,7 +9,7 @@
 			validate<span>Me</span>
 		</h1>
 	</div>
-	<form class="form-account-login" method="post" action="" ajax="true">
+	<form id="form-account-login" method="post" action="" ajax="true">
 		<div class="inner">
 			<div class="row">
 				<p>No Placeholder</p>
@@ -84,7 +84,7 @@
 			<div class="row">
 				<p>Checkbox</p>
 				<div class="checkbox">
-					<input type="checkbox" value="1" name="checkbox" id="checkbox">
+					<input type="checkbox" value="1" name="checkbox[]" id="checkbox">
 					<label for="checkbox">
 						Checkbox Label
 					</label>
@@ -109,7 +109,6 @@
 	</form>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script type="module" src="../dist/me-validate-es.min.js"></script>
 <script type="module" src="js/app.main.js"></script>
 
